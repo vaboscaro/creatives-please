@@ -1,0 +1,7 @@
+runtime: python39
+instance_class: F4_1G  # Replace with the desired machine class
+entrypoint: gunicorn -b :$PORT main:app
+
+env_variables:
+  GOOGLE_CLIENT_ID: "${GOOGLE_CLIENT_ID}"
+  GOOGLE_CLIENT_SECRET: "${GOOGLE_CLIENT_SECRET}"

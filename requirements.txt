@@ -1,0 +1,8 @@
+Flask
+authlib
+gunicorn
+google-api-python-client
+flask-session
+google-cloud-bigquery
+google-cloud-storage
+pytz

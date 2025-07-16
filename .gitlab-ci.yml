@@ -1,0 +1,9 @@
+stages:
+  - deploy
+
+deploy:
+  image: google/cloud-sdk:slim
+  stage: deploy
+  script:
+    - gcloud auth activate-service-account --key-file=credentials.json
+    - gcloud app deploy --quiet

@@ -1,0 +1,16 @@
+# Python files
+__pycache__/
+*.py[cod]
+
+# Environment and credentials
+.env
+credentials.json
+*-token.json
+
+# GCP Deployment Files
+.gcloudignore
+.DS_Store
+
+# Logs
+*.log.env
+credentials.json

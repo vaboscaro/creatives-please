@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link href='https://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet'>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creatives, Please</title>
+    <style>
+        body {
+            font-family: Montserrat;
+            margin: 0;
+            padding: 0;
+            background-color: #121212;
+            color: #fff;
+        }
+        /* Header */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            background: linear-gradient(90deg, #343a40, #495057);
+            color: #fff;
+            height: 7vh;
+        }
+        header h1 {
+            margin: 0;
+            font-size: 1.5rem;
+        }
+        header a {
+            text-decoration: none;
+            color: #fff;
+            padding: 10px 15px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        header a:hover {
+            background-color: #6c757d;
+        }
+
+        /* Loading Animation */
+        #loading {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+        #loading .spinner {
+            border: 6px solid rgba(255, 255, 255, 0.2);
+            border-top: 6px solid #fff;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Container */
+        .container {
+            display: flex;
+            justify-content: space-between;
+            padding: 20px;
+        }
+
+        /* Video Section */
+        .video-container {
+            flex: 2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-right: 20px;
+        }
+        video {
+            max-height: 60vh;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
+            margin-bottom: 20px;
+        }
+        .details {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .details p {
+            margin: 5px 0;
+            line-height: 1.2;
+        }
+
+        /* Question Section */
+        .questions {
+            flex: 1;
+            background-color: #1e1e1e;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
+        }
+        .question {
+            margin-bottom: 20px;
+        }
+        .question label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+            color: #17a2b8;
+        }
+        .question button {
+            margin: 5px;
+            padding: 10px 20px;
+            font-size: 14px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            background-color: #343a40;
+            color: #fff;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+        .question button:hover {
+            background-color: #17a2b8;
+            transform: scale(1.05);
+        }
+        .question button.selected {
+            background-color: #17a2b8;
+            color: #fff;
+        }
+
+        /* Actions Section */
+        .actions {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        button {
+            padding: 10px 40px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+        button:hover {
+            opacity: 0.9;
+            transform: scale(1.05);
+        }
+        .approve {
+            background-color: #28a745;
+            color: #fff;
+        }
+        .not-approve {
+            background-color: #dc3545;
+            color: #fff;
+        }
+        .skip {
+            background-color: #808080;
+            color: #fff;
+        }
+        .categories {
+            flex: 1;
+            background-color: #1e1e1e;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
+            margin-right: 20px;  /* adds spacing between this box and the video container */
+        }
+        .categories button {
+            margin: 5px;
+            padding: 10px 20px;
+            font-size: 14px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            background-color: #343a40;
+            color: #fff;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+        .categories button:hover {
+            background-color: #17a2b8;
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+    <div id="loading"><div class="spinner"></div></div>
+    <header>
+        <h1><a href="/" style="text-decoration: none; color: inherit;">Creatives, Please</a></h1>
+        <div>
+            <a href="/video_list">Video List</a>
+            <a href="/logout">Logout</a>
+        </div>
+    </header>
+    <div class="container">
+        <div class="categories">
+            <button>Todos</button>
+            <button>Influencer</button>
+            <button>UGC</button>
+        </div>
+        <div class="video-container">
+            <video controls autoplay>
+                <source src="{{ video_url }}" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+            <div class="details">
+                <p>Posted at: {{ posted_at }}</p>
+                <p>Profile username: {{ username }}</p>
+            </div>
+        </div>
+        <div class="questions">
+            <div class="question">
+                <label for="gender">Conteúdo relevante para ads?</label>
+                <button class="answer-option" data-category="gender" data-value="Não">Não</button>
+                <button class="answer-option" data-category="gender" data-value="Sim">Sim</button>
+            </div>
+            <div class="question">
+                <label for="product">Pode ser considerado um conteúdo campeão?</label>
+                <button class="answer-option" data-category="product" data-value="Não">Não</button>
+                <button class="answer-option" data-category="product" data-value="Sim">Sim</button>
+            </div>
+        </div>
+    </div>
+    <div class="actions">
+        <form method="post" action="/content_review/{{ _ComputedKey }}">
+            <input type="hidden" name="action" value="PRECISA REENVIAR">
+            <input type="hidden" name="selected_answers" id="selected_answers">
+            <button class="not-approve" type="submit">PRECISA REENVIAR</button>
+        </form>
+        <form method="post" action="/content_review/{{ _ComputedKey }}">
+            <input type="hidden" name="action" value="APROVADO SEM ALTERAÇÕES">
+            <input type="hidden" name="selected_answers" id="selected_answers">
+            <button class="approve" type="submit">APROVADO SEM ALTERAÇÕES</button>
+        </form>
+        <form method="post" action="/content_review/{{ _ComputedKey }}">
+            <input type="hidden" name="action" value="APROVADO COM ALTERAÇÕES">
+            <input type="hidden" name="selected_answers" id="selected_answers">
+            <button class="skip" type="submit">APROVADO COM ALTERAÇÕES</button>
+        </form>
+    </div>
+    <script>
+        // Show loading spinner when page is loading
+        document.addEventListener("DOMContentLoaded", () => {
+            document.getElementById("loading").style.display = "none";
+        });
+        // Function to update the hidden input field with selected answers
+        function updateSelectedAnswers() {
+            const selectedAnswers = {};
+            document.querySelectorAll('.answer-option.selected').forEach(option => {
+                const category = option.getAttribute('data-category'); // Get the category (e.g., "gender" or "test1")
+                const value = option.getAttribute('data-value'); // Get the value (e.g., "Masc" or "Option1")
+                if (category && value) { // Ensure both category and value exist
+                    selectedAnswers[category] = value;
+                } else {
+                    console.warn("Button is missing data-category or data-value:", option); // Debugging
+                }
+            });
+            const selectedAnswersInput = document.getElementById('selected_answers');
+            selectedAnswersInput.value = JSON.stringify(selectedAnswers);
+            console.log("Updated selected answers:", selectedAnswers); // Debugging output
+            return JSON.stringify(selectedAnswers)
+        }
+
+        // Event listener to toggle selection and update answers
+        document.querySelectorAll('.answer-option').forEach(option => {
+            option.addEventListener('click', () => {
+                const category = option.dataset.category;
+                document.querySelectorAll(`.answer-option[data-category="${category}"]`).forEach(opt => opt.classList.remove('selected'));
+                option.classList.add('selected');
+                updateSelectedAnswers(); // Call the function to update the hidden field
+            });
+        });
+
+        document.querySelectorAll('form').forEach(form => {
+            form.addEventListener('submit', event => {
+                const selectedAnswers = updateSelectedAnswers(); // Get updated selected answers
+                const parsedAnswers = JSON.parse(selectedAnswers || '{}');
+
+                // Check if the "gender" category is selected
+                if (!parsedAnswers.gender) {
+                    event.preventDefault(); // Prevent form submission
+                    alert('Please select a gender before proceeding.');
+                    document.getElementById("loading").style.display = "none"; // Hide loading spinner
+                    return;
+                }
+
+                // Proceed with form submission
+                document.getElementById("loading").style.display = "flex";
+                const hiddenInput = form.querySelector('input[name="selected_answers"]');
+                hiddenInput.value = selectedAnswers; // Assign value to the input field in the form being submitted
+                console.log(`Form being submitted with answers:`, selectedAnswers);
+            });
+        });
+
+        form.addEventListener('submit', () => {
+            console.log("Submitting selected answers:", document.getElementById('selected_answers').value);
+        });
+
+        form.addEventListener('submit', () => {
+            console.log("Form submitted with video ID:", form.action);
+        });
+
+        // Reset the hidden input field on page load
+        document.getElementById('selected_answers').value = '';
+        console.log("Form reset: Hidden input cleared on page load.");
+    </script>
+</body>
+</html>
