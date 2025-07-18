@@ -81,12 +81,13 @@ def review(video_id):
 
     user_email = session.get('user', {}).get('email', 'default_email@example.com')
     selected_answers = request.form.get('selected_answers', '{}')  # Get JSON string of selected answers
-    rejection_reason = request.form.get('reject_reason', {})
     
     try:
         selected_answers = json.loads(selected_answers)  # Parse JSON into a Python dict
     except json.JSONDecodeError:
         selected_answers = {}
+
+    url = selected_answers.get("url", None)
 
     video = fetch_video_by_id(video_id)
     # videos_category = selected_answers.get("categories", "Todos")
@@ -97,7 +98,9 @@ def review(video_id):
         action,
         gender=selected_answers.get('gender', None),
         product=selected_answers.get('product', None),
-        rejection_reason=rejection_reason
+        rejection_reason=print(selected_answers.get('rejection_reason')),
+        theme=selected_answers.get('theme', None),
+        url=url
     )
     
     # Fetch the next video_id (logic depends on your data structure)
@@ -157,12 +160,12 @@ def video_page(video_id=None):
     
     if not video_id:
         return redirect(url_for("end_page"))
+    
     video = fetch_video_by_id(video_id)
-
     user_email = session.get('user', {}).get('email', 'default_email@example.com')
-
-    # Handle the `posted_at` field safely
     posted_at = video.get('posted_at', None)
+
+    products = fetch_distinct_products_cached()
 
     return render_template(
         'video.html',
@@ -170,7 +173,8 @@ def video_page(video_id=None):
         username=video['profile_username'],
         user_email=user_email,
         posted_at=posted_at,
-        video_id=video['id']
+        video_id=video['id'],
+        products=products
     )
 
 @app.route('/content_approval/<video_id>', methods=['GET'])

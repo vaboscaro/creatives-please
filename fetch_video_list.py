@@ -5,6 +5,7 @@ import datetime
 from dotenv import load_dotenv
 import os
 import json
+import time
 
 load_dotenv()
 
@@ -25,13 +26,32 @@ credentials = service_account.Credentials.from_service_account_info(
     scopes=scopes
 )
 
-print(f"Using service account: {credentials.service_account_email}")
-
 # Create a BigQuery client with explicit credentials
 client = bigquery.Client(
     credentials=credentials, 
     project=credentials.project_id,
 )
+
+_last_fetch_time = 0
+_cached_products = []
+
+def fetch_distinct_products_cached(ttl_seconds=3600):
+    global _last_fetch_time, _cached_products
+    now = time.time()
+
+    if now - _last_fetch_time > ttl_seconds:
+        print("Refreshing product list from BigQuery")
+        product_query = """
+            SELECT DISTINCT product_title
+            FROM insider-lake-sensitive.integrated_br.gsheets_capomastro_products
+            ORDER BY product_title
+        """
+        query_job = client.query(product_query)
+        result = query_job.result()
+        _cached_products = [row.product_title for row in result]
+        _last_fetch_time = now
+
+    return _cached_products
 
 def fetch_video_list_fn():
 

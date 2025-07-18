@@ -23,7 +23,7 @@ credentials = Credentials.from_service_account_file(
 service = build("sheets", "v4", credentials=credentials)
 spreadsheet_id = os.getenv('SPREADSHEET_ID')
 
-def log_to_sheet(video, approver_email, outcome, gender=None, product=None, rejection_reason=None):
+def log_to_sheet(video, approver_email, outcome, gender=None, product=None, rejection_reason=None, theme=None, url=None):
     
     """Logs video approval outcome to Google Sheets."""
     posted_at = (
@@ -31,6 +31,7 @@ def log_to_sheet(video, approver_email, outcome, gender=None, product=None, reje
         if isinstance(video["posted_at"], datetime.datetime)
         else video["posted_at"]
     )
+    
     values = [[
         video["id"],
         video["profile_username"],
@@ -43,7 +44,9 @@ def log_to_sheet(video, approver_email, outcome, gender=None, product=None, reje
         gender if gender else "Not Selected",
         product if product else "Not Selected",
         datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-        rejection_reason
+        rejection_reason,
+        theme,
+        url
     ]]
     body = {"values": values}
     

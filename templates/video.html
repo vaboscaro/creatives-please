@@ -210,6 +210,33 @@
             border-radius: 5px;
             box-sizing: border-box;
         }
+        .question select.dropdown {
+            width: 100%;
+            padding: 10px 20px;
+            font-size: 14px;
+            border: none;
+            border-radius: 5px;
+            background-color: #343a40;
+            color: #fff;
+            cursor: pointer;
+            appearance: none;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+        .question select.dropdown:hover {
+            background-color: #17a2b8;
+            transform: scale(1.02);
+        }
+        .question select.dropdown:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px #17a2b8;
+        }
+        .question input {
+            width: 100%;
+            padding: 8px;
+            border: none;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
     </style>
 </head>
 <body>
@@ -246,16 +273,73 @@
                 <button class="answer-option" data-category="gender" data-value="no-gender">No Gender</button>
             </div>
             <div class="question">
-                <label for="product">Produto</label>
-                <button class="answer-option" data-category="product" data-value="look">Look Completo</button>
-                <button class="answer-option" data-category="product" data-value="techtshirt">Tech T-Shirt</button>
-                <button class="answer-option" data-category="product" data-value="perfecttop">Perfect Top</button>
-                <button class="answer-option" data-category="product" data-value="underwear">Underwear</button>
-                <button class="answer-option" data-category="product" data-value="others">Outros</button>
+                <label for="gender">Campanha</label>
+                <button class="answer-option" data-category="campaign" data-value="Aquisição">Aquisição</button>
+                <button class="answer-option" data-category="campaign" data-value="Retenção">Retenção</button>
             </div>
             <div class="question">
-                <label for="rejection-reason">Motivo de Rejeição:</label>
-                <input class="answer-option" data-category="rejection-justification" name="rejection-reason" placeholder="Escreva, em poucas palavras, o motivo da rejeição.">
+                <label for="product-select">Produto</label>
+                <select id="product-select"
+                        name="product"
+                        class="answer-option dropdown"
+                        data-category="product">
+                  <option value="">Selecione um produto...</option>
+                  {% for product in products %}
+                    <option value="{{ product }}">{{ product }}</option>
+                  {% endfor %}
+                </select>
+            </div>
+            <div class="question">
+                <label for="theme">Tema-Subtema</label>
+                <select id="theme" name="theme" class="answer-option dropdown" data-category="theme">
+                  <option value="Produto Problema-Solução">Produto Problema-Solução</option>
+                  <option value="Produto Deepdive">Produto Deepdive</option>
+                  <option value="Produto Insert">Produto Insert</option>
+                  <option value="Produto Polêmica">Produto Polêmica</option>
+                  <option value="Produto Teste">Produto Teste</option>
+                  <option value="Produto Social Proof">Produto Social Proof</option>
+                  <option value="Produto Reality Proof">Produto Reality Proof</option>
+                  <option value="Comparativos">Comparativos</option>
+                  <option value="Looks GRWM">Looks GRWM</option>
+                  <option value="Looks Dicas">Looks Dicas</option>
+                  <option value="Looks Clip">Looks Clip</option>
+                  <option value="Looks Antes e Depois">Looks Antes e Depois</option>
+                  <option value="Unboxing">Unboxing</option>
+                  <option value="Entrevista">Entrevista</option>
+                  <option value="Mean Tweet">Mean Tweet</option>
+                  <option value="Lista">Lista</option>
+                  <option value="Vlog/Lifestyle">Vlog/Lifestyle</option>
+                  <option value="Objeções Comprar Online">Objeções Comprar Online</option>
+                  <option value="Objeções Preço">Objeções Preço</option>
+                  <option value="Objeções Tamanho Certo">Objeções Tamanho Certo</option>
+                  <option value="Objeções Não Conhece Insider">Objeções Não Conhece Insider</option>
+                  <option value="Conteúdo/Curiosidade">Conteúdo/Curiosidade</option>
+                  <option value="Sustentabilidade">Sustentabilidade</option>
+                </select>
+            </div>
+            <div class="question">
+                <label for="rejection-reason-select">Motivo de Rejeição</label>
+                <select id="rejection-reason-select" name="rejection_reason" class="answer-option dropdown" data-category="rejection_reason">
+                    <option value="Conteúdo de Social da Insider">Conteúdo de Social da Insider</option>
+                    <option value="Roupas não-Insider">Roupas não-Insider</option>
+                    <option value="Problemas de roteiro/hook">Problemas de roteiro/hook</option>
+                    <option value="Estética">Estética</option>
+                    <option value="Não cita Insider">Não cita Insider</option>
+                    <option value="Erro de formato">Erro de formato</option>
+                    <option value="Conteúdo já editado internamente">Conteúdo já editado internamente</option>
+                    <option value="Mensagem sazonal ">Mensagem sazonal</option>
+                </select>
+            </div>
+            <div class="question">
+                <label for="video-url">Landing Page</label>
+                <input
+                  type="url"
+                  id="video-url"
+                  name="video-url"
+                  class="answer-option"
+                  placeholder="https://insiderstore.com.br"
+                  data-category="url"
+                />
             </div>
         </div>
     </div>
@@ -286,81 +370,89 @@
         </form>
     </div>
     <script>
-        // Show loading spinner when page is loading
         document.addEventListener("DOMContentLoaded", () => {
             document.getElementById("loading").style.display = "none";
-            updateSelectedAnswers(); // Ensure the hidden input is updated with the current selection
+            updateSelectedAnswers(); // Populate hidden field on load
+            document.getElementById('selected_answers').value = ''; // Reset on load
+    
+            // Trigger update when dropdown changes
+            const themeSelect = document.getElementById('theme');
+            if (themeSelect) {
+                themeSelect.addEventListener('change', updateSelectedAnswers);
+            }
+    
+            // Toggle button selection
+            document.querySelectorAll('.answer-option').forEach(option => {
+                if (option.tagName !== 'SELECT') { // ignore the dropdown itself
+                    option.addEventListener('click', () => {
+                        const category = option.dataset.category;
+                        document.querySelectorAll(`.answer-option[data-category="${category}"]`).forEach(opt => opt.classList.remove('selected'));
+                        option.classList.add('selected');
+                        updateSelectedAnswers();
+                    });
+                }
+            });
+    
+            // Handle all form submissions
+            document.querySelectorAll('form').forEach(form => {
+                form.addEventListener('submit', event => {
+                    const selectedAnswers = updateSelectedAnswers();
+                    const parsedAnswers = JSON.parse(selectedAnswers || '{}');
+    
+                    if (!parsedAnswers.gender) {
+                        event.preventDefault();
+                        alert('Please select a gender before proceeding.');
+                        document.getElementById("loading").style.display = "none";
+                        return;
+                    }
+    
+                    // Copy selected answers
+                    const hiddenInput = form.querySelector('input[name="selected_answers"]');
+                    if (hiddenInput) hiddenInput.value = selectedAnswers;
+    
+                    // Copy rejection reason
+                    const rejectionReason = document.querySelector('input[name="rejection-reason"]')?.value || '';
+                    const rejectInput = form.querySelector('input[name="reject_reason"]');
+                    if (rejectInput) rejectInput.value = rejectionReason;
+    
+                    document.getElementById("loading").style.display = "flex";
+    
+                    console.log("Submitting selected answers:", selectedAnswers);
+                    console.log("Form submitted with video ID:", form.action);
+                });
+            });
         });
-
-        // Function to update the hidden input field with selected answers
+    
         function updateSelectedAnswers() {
             const selectedAnswers = {};
+        
+            // 1. Handle buttons with `.selected` and data-value
             document.querySelectorAll('.answer-option.selected').forEach(option => {
-                const category = option.getAttribute('data-category'); // Get the category (e.g., "gender" or "test1")
-                const value = option.getAttribute('data-value'); // Get the value (e.g., "Masc" or "Option1")
-                if (category && value) { // Ensure both category and value exist
+                const category = option.getAttribute('data-category');
+                const value = option.getAttribute('data-value');
+                if (category && value) {
                     selectedAnswers[category] = value;
-                } else {
-                    console.warn("Button is missing data-category or data-value:", option); // Debugging
                 }
             });
+        
+            // 2. Handle all <input> and <select> elements with data-category
+            document.querySelectorAll('input[data-category], select[data-category], textarea[data-category]').forEach(element => {
+                const category = element.getAttribute('data-category');
+                const value = element.value;
+                if (category && value) {
+                    selectedAnswers[category] = value;
+                }
+            });
+        
+            // 3. Update hidden input field
             const selectedAnswersInput = document.getElementById('selected_answers');
-            selectedAnswersInput.value = JSON.stringify(selectedAnswers);
-            console.log("Updated selected answers:", selectedAnswers); // Debugging output
-            return JSON.stringify(selectedAnswers)
+            if (selectedAnswersInput) {
+                selectedAnswersInput.value = JSON.stringify(selectedAnswers);
+            }
+        
+            console.log("Updated selected answers:", selectedAnswers);
+            return JSON.stringify(selectedAnswers);
         }
-
-        // Event listener to toggle selection and update answers
-        document.querySelectorAll('.answer-option').forEach(option => {
-            option.addEventListener('click', () => {
-                const category = option.dataset.category;
-                document.querySelectorAll(`.answer-option[data-category="${category}"]`).forEach(opt => opt.classList.remove('selected'));
-                option.classList.add('selected');
-                updateSelectedAnswers(); // Call the function to update the hidden field
-            });
-        });
-
-        document.querySelectorAll('form').forEach(form => {
-            form.addEventListener('submit', event => {
-                const selectedAnswers = updateSelectedAnswers(); // Get updated selected answers
-                const parsedAnswers = JSON.parse(selectedAnswers || '{}');
-
-                // Check if the "gender" category is selected
-                if (!parsedAnswers.gender) {
-                    event.preventDefault(); // Prevent form submission
-                    alert('Please select a gender before proceeding.');
-                    document.getElementById("loading").style.display = "none"; // Hide loading spinner
-                    return;
-                }
-
-                // Proceed with form submission
-                document.getElementById("loading").style.display = "flex";
-                const hiddenInput = form.querySelector('input[name="selected_answers"]');
-                hiddenInput.value = selectedAnswers; // Assign value to the input field in the form being submitted
-                console.log(`Form being submitted with answers:`, selectedAnswers);
-            });
-        });
-
-        document.querySelectorAll('form').forEach(form => {
-            form.addEventListener('submit', event => {
-                // Get the value from the input field with name "rejection-reason"
-                const rejectionReason = document.querySelector('input[name="rejection-reason"]').value;
-                // Copy it to the hidden input field with name "reject_reason" in the form being submitted
-                form.querySelector('input[name="reject_reason"]').value = rejectionReason;
-            });
-        });
-
-        form.addEventListener('submit', () => {
-            console.log("Submitting selected answers:", document.getElementById('selected_answers').value);
-        });
-
-        form.addEventListener('submit', () => {
-            console.log("Form submitted with video ID:", form.action);
-        });
-
-        // Reset the hidden input field on page load
-        document.getElementById('selected_answers').value = '';
-        console.log("Form reset: Hidden input cleared on page load.");
     </script>
 </body>
 </html>
