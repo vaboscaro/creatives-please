@@ -96,7 +96,7 @@ def review(video_id):
         action,
         gender=selected_answers.get('gender', None),
         product=selected_answers.get('product', None),
-        rejection_reason=print(selected_answers.get('rejection_reason')),
+        rejection_reason=selected_answers.get('rejection_reason'),
         theme=selected_answers.get('theme', None),
         url=selected_answers.get("url", None)
     )

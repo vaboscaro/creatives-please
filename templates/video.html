@@ -280,6 +280,15 @@
         .ts-dropdown .option:hover {
             background-color: #343a40;
         }
+        select.dropdown option.placeholder-option {
+            color: #5f5f5f;
+        }
+        select.dropdown:invalid {
+            color: #5f5f5f;
+        }
+        select.dropdown:valid {
+            color: #fff;
+        }
     </style>
 </head>
 <body>
@@ -336,7 +345,8 @@
             </div>
             <div class="question">
                 <label for="theme">Tema-Subtema</label>
-                <select id="theme" name="theme" class="answer-option dropdown" data-category="theme">
+                <select id="theme" name="theme" class="answer-option dropdown" data-category="theme" required>
+                  <option value="" disabled selected hidden class="placeholder-option">Selecione um Tema</option>
                   <option value="Produto Problema-Solução">Produto Problema-Solução</option>
                   <option value="Produto Deepdive">Produto Deepdive</option>
                   <option value="Produto Insert">Produto Insert</option>
@@ -364,7 +374,8 @@
             </div>
             <div class="question">
                 <label for="rejection-reason-select">Motivo de Rejeição</label>
-                <select id="rejection-reason-select" name="rejection_reason" class="answer-option dropdown" data-category="rejection_reason">
+                <select id="rejection-reason-select" name="rejection_reason" class="answer-option dropdown" data-category="rejection_reason" required>
+                    <option value="" disabled selected hidden class="placeholder-option">Selecione um Motivo, caso rejeitado</option>
                     <option value="Conteúdo de Social da Insider">Conteúdo de Social da Insider</option>
                     <option value="Roupas não-Insider">Roupas não-Insider</option>
                     <option value="Problemas de roteiro/hook">Problemas de roteiro/hook</option>
