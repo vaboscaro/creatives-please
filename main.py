@@ -87,8 +87,6 @@ def review(video_id):
     except json.JSONDecodeError:
         selected_answers = {}
 
-    url = selected_answers.get("url", None)
-
     video = fetch_video_by_id(video_id)
     # videos_category = selected_answers.get("categories", "Todos")
 
@@ -100,7 +98,7 @@ def review(video_id):
         product=selected_answers.get('product', None),
         rejection_reason=print(selected_answers.get('rejection_reason')),
         theme=selected_answers.get('theme', None),
-        url=url
+        url=selected_answers.get("url", None)
     )
     
     # Fetch the next video_id (logic depends on your data structure)
@@ -166,6 +164,7 @@ def video_page(video_id=None):
     posted_at = video.get('posted_at', None)
 
     products = fetch_distinct_products_cached()
+    urls = fetch_distinct_urls_cached()
 
     return render_template(
         'video.html',
@@ -174,7 +173,8 @@ def video_page(video_id=None):
         user_email=user_email,
         posted_at=posted_at,
         video_id=video['id'],
-        products=products
+        products=products,
+        urls=urls
     )
 
 @app.route('/content_approval/<video_id>', methods=['GET'])

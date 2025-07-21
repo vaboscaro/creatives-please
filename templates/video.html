@@ -2,6 +2,8 @@
 <html lang="en">
 <head>
     <link href='https://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet'>
+    <link href="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/css/tom-select.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/js/tom-select.complete.min.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Creatives, Please</title>
@@ -237,6 +239,47 @@
             border-radius: 5px;
             box-sizing: border-box;
         }
+        .ts-wrapper {
+            background-color: #343a40;
+            border-radius: 5px;
+            padding: 5px;
+            color: #fff;
+            font-size: 14px;
+            border: none;
+            box-shadow: none;
+            width: 100%;
+        }
+        .ts-wrapper.single .ts-control {
+            background-color: #343a40;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+        .ts-wrapper.single .ts-control:hover,
+        .ts-wrapper.focus .ts-control {
+            background-color: #343a40; /* keep same as default */
+            color: #343a40;
+            transform: scale(1.02);
+        }
+        .ts-dropdown {
+            background-color: #1e1e1e;
+            color: #fff;
+            border-radius: 5px;
+            border: 1px solid #343a40;
+        }
+        .ts-dropdown .active {
+            background-color: #17a2b8;
+            color: #343a40;
+        }
+        .ts-dropdown .option {
+            padding: 10px 15px;
+            cursor: pointer;
+        }
+        .ts-dropdown .option:hover {
+            background-color: #343a40;
+        }
     </style>
 </head>
 <body>
@@ -282,11 +325,13 @@
                 <select id="product-select"
                         name="product"
                         class="answer-option dropdown"
-                        data-category="product">
-                  <option value="">Selecione um produto...</option>
-                  {% for product in products %}
-                    <option value="{{ product }}">{{ product }}</option>
-                  {% endfor %}
+                        data-category="product"
+                        placeholder="Selecione ou digite um produto"
+                        autocomplete="on">
+                    <option value="">Selecione ou Digite um Produto</option>
+                    {% for product in products %}
+                        <option value="{{ product }}">{{ product }}</option>
+                    {% endfor %}
                 </select>
             </div>
             <div class="question">
@@ -331,15 +376,14 @@
                 </select>
             </div>
             <div class="question">
-                <label for="video-url">Landing Page</label>
-                <input
-                  type="url"
-                  id="video-url"
-                  name="video-url"
-                  class="answer-option"
-                  placeholder="https://insiderstore.com.br"
-                  data-category="url"
-                />
+                <label for="url-select">Landing Page</label>
+                <select id="url-select" name="url-select" placeholder="Selecione ou digite uma Landing Page." autocomplete="on"
+                        class="answer-option dropdown" data-category="url">
+                    <option value="">Selecione ou Digite uma Landing Page</option>
+                  {% for url in urls %}
+                    <option value="{{ url }}">{{ url }}</option>
+                  {% endfor %}
+                </select>
             </div>
         </div>
     </div>
@@ -375,6 +419,26 @@
             updateSelectedAnswers(); // Populate hidden field on load
             document.getElementById('selected_answers').value = ''; // Reset on load
     
+            new TomSelect('#url-select', {
+                create: true,
+                maxItems: 1,
+                persist: false,
+                placeholder: "Selecione ou digite uma URL",
+                onChange: function(value) {
+                  updateSelectedAnswers();
+                }
+            });
+
+            new TomSelect('#product-select', {
+                create: true,
+                maxItems: 1,
+                persist: false,
+                placeholder: "Selecione ou digite um produto",
+                onChange: function(value) {
+                    updateSelectedAnswers();
+                }
+            });
+
             // Trigger update when dropdown changes
             const themeSelect = document.getElementById('theme');
             if (themeSelect) {

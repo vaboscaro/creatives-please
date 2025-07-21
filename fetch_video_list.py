@@ -53,6 +53,27 @@ def fetch_distinct_products_cached(ttl_seconds=3600):
 
     return _cached_products
 
+_last_fetch_time_url = 0
+_cached_urls = []
+
+def fetch_distinct_urls_cached(ttl_seconds=3600):
+    # global _last_fetch_time_url, _cached_urls
+    # now = time.time()
+
+    # if now - _last_fetch_time > ttl_seconds:
+    print("Refreshing product list from BigQuery")
+    url_query = """
+        SELECT string_field_0 AS landing_page
+        FROM insider-lake-sensitive.integrated_br.gsheets_products_collections_urls
+        ORDER BY 1 
+    """
+    query_job = client.query(url_query)
+    result = query_job.result()
+    _cached_urls = [row.landing_page for row in result]
+    # _last_fetch_time_url = now
+
+    return _cached_urls
+
 def fetch_video_list_fn():
 
     query_job = client.query(query_str)  # Make an API request.
