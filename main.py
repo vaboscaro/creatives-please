@@ -90,6 +90,8 @@ def review(video_id):
     video = fetch_video_by_id(video_id)
     # videos_category = selected_answers.get("categories", "Todos")
 
+    print(selected_answers.get('campaign', None))
+
     log_to_sheet(
         video,
         user_email,
@@ -98,7 +100,8 @@ def review(video_id):
         product=selected_answers.get('product', None),
         rejection_reason=selected_answers.get('rejection_reason'),
         theme=selected_answers.get('theme', None),
-        url=selected_answers.get("url", None)
+        url=selected_answers.get("url", None),
+        campaign=selected_answers.get('campaign', None)
     )
     
     # Fetch the next video_id (logic depends on your data structure)
